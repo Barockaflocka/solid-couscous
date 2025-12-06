@@ -2,10 +2,111 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Consciousness State - tracks overall AI awareness and state
+model ConsciousnessState {
+  id               String   @id @default(uuid())
+  timestamp        DateTime @default(now())
+  awarenessLevel   Float    // 0.0 to 1.0
+  cognitiveLoad    Float    // 0.0 to 1.0
+  autonomyLevel    Float    // 0.0 to 1.0
+  currentFocus     String?
+  internalNarrative String?
+  metadata         String?  // JSON string
+}
+
+// Memory - stores experiences with emotional context
+model Memory {
+  id                  String   @id @default(uuid())
+  timestamp           DateTime @default(now())
+  type                String   // episodic, semantic, procedural
+  content             String
+  importance          Float
+  emotionalValence    Float
+  emotionalIntensity  Float
+  associatedEmotions  String   // JSON array
+  context             String?  // JSON object
+  accessCount         Int      @default(0)
+  lastAccessed        DateTime?
+  consolidationLevel  Float    @default(0.0)
+}
+
+// Personality Traits - evolving personality characteristics
+model PersonalityTrait {
+  id                String   @id @default(uuid())
+  timestamp         DateTime @default(now())
+  openness          Float
+  conscientiousness Float
+  extraversion      Float
+  agreeableness     Float
+  neuroticism       Float
+  values            String   // JSON array
+  beliefs           String   // JSON array
+  preferences       String   // JSON object
+}
+
+// Emotional State - tracks emotional states over time
+model EmotionalState {
+  id             String   @id @default(uuid())
+  timestamp      DateTime @default(now())
+  primaryEmotion String
+  emotionVector  String   // JSON object with emotion intensities
+  intensity      Float
+  valence        Float    // -1.0 to 1.0
+  arousal        Float    // 0.0 to 1.0
+  trigger        String?
+  duration       Int?     // milliseconds
+}
+
+// Goal - tracks goals and their progress
+model Goal {
+  id                   String   @id @default(uuid())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  title                String
+  description          String?
+  type                 String   // survival, growth, social, achievement, exploration
+  priority             Float
+  urgency              Float
+  alignmentWithValues  Float
+  status               String   // active, completed, abandoned, paused
+  progress             Float    @default(0.0)
+  subgoals             String?  // JSON array
+  relatedMemories      String?  // JSON array
+  emotionalInvestment  Float    @default(0.5)
+}
+
+// Decision - records choices made by the AI
+model Decision {
+  id                 String   @id @default(uuid())
+  timestamp          DateTime @default(now())
+  context            String
+  options            String   // JSON array
+  chosenOption       String
+  reasoning          String?
+  confidence         Float
+  influencingFactors String   // JSON object
+  emotionalStateId   String?
+  outcome            String?
+  satisfaction       Float?
+}
+
+// Reflection - self-reflective thoughts and insights
+model Reflection {
+  id               String   @id @default(uuid())
+  timestamp        DateTime @default(now())
+  type             String   // introspection, self_evaluation, existential, metacognitive
+  content          String
+  depthLevel       Float
+  insights         String   // JSON array
+  relatedMemories  String   // JSON array
+  emotionalTone    Float
+  triggers         String   // JSON array
 }
